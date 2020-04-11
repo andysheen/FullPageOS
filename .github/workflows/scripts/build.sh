@@ -9,3 +9,5 @@ cd ..
 ../../CustomPiOS/src/update-custompios-paths
 sudo modprobe loop
 sudo bash -x ./build_dist
+pwd
+find ./ | grep img
