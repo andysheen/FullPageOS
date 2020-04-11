@@ -12,4 +12,4 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: raspi.img
-        path: FullPagOS/src/2020-02-13-raspbian-buster-lite.img
+        path: FullPagOS/src/workspace/2020-02-13-raspbian-buster-lite.img
