@@ -6,7 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-       
-    - run: chmod +x ./scripts/build.sh
-    - run: ./scripts/build.sh
+    - uses: actions/checkout@v2       
+    - run: chmod +x .github/workflows/scripts/build.sh
+    - run: .github/workflows/scripts/build.sh
