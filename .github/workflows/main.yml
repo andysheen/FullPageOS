@@ -9,7 +9,28 @@ jobs:
     - uses: actions/checkout@v2       
     - run: chmod +x .github/workflows/scripts/build.sh
     - run: .github/workflows/scripts/build.sh
+    - run: |
+      mv /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/*-raspbian-buster-lite.img fullpageos.img
+      gzip fullpageos.img
     - uses: actions/upload-artifact@v1
       with:
-        name: raspi.img
-        path: /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/2020-02-13-raspbian-buster-lite.img
+        name: fullpageos.img.gz
+        path: fullpageos.img.gz
+    - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+    - name: Upload Release
+        id: upload-release-asset-fullpageos
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: fullpageos.img.gz
+          asset_name: fullpageos.img.gz
+          asset_content_type: application/octet-stream
