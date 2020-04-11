@@ -14,13 +14,13 @@ jobs:
     - run: chmod +x .github/workflows/scripts/build.sh
     - run: .github/workflows/scripts/build.sh
     - name: Copy Output
-      run: cp /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/*-raspbian-buster-lite.img /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/fullpageos.img
+      run: cp /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/*-raspbian-buster-lite.img /home/runner/work/FullPageOS/fullpageos.img
     - name: Zip Output
-      run: gzip /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/fullpageos.img
+      run: gzip /home/runner/work/FullPageOS/fullpageos.img
     - uses: actions/upload-artifact@v1
       with:
         name: fullpageos.img.gz
-        path: /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/fullpageos.img.gz
+        path: /home/runner/work/FullPageOS/fullpageos.img.gz
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -36,6 +36,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/fullpageos.img.gz
+        asset_path: /home/runner/work/FullPageOS/fullpageos.img.gz
         asset_name: fullpageos.img.gz
         asset_content_type: application/octet-stream
