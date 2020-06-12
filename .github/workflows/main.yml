@@ -10,17 +10,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2       
-    - run: chmod +x .github/workflows/scripts/build.sh
-    - run: .github/workflows/scripts/build.sh
+    - name: Install Dependencies
+      run: sudo apt install coreutils p7zip-full qemu-user-static
+    - name: Checkout CustomPiOS
+      uses: actions/checkout@v2
+      with:
+        repository: 'guysoft/CustomPiOS'
+        path: CustomPiOS
+    - name: Checkout Project Repository
+      uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository }}
+        path: repository
+    - name: Download Raspbian Image
+      run: cd repository/src/image && wget -q -c --trust-server-names 'https://downloads.raspberrypi.org/raspbian_lite_latest'
+    - name: Update CustomPiOS Paths
+      run: cd repository/src && ../../CustomPiOS/src/update-custompios-paths
+    - name: Build Image
+      run: sudo modprobe loop && cd repository/src && sudo bash -x ./build_dist
     - name: Move Output
-      run: mv /home/runner/work/FullPageOS/FullPageOS/FullPageOS/src/workspace/*-raspbian-buster-lite.img fullpageos.img
+      run: mv ${{ github.workspace }}/repository/src/workspace/*-raspbian-buster-lite.img build.img
     - name: Zip Output
-      run: gzip fullpageos.img
+      run: gzip build.img
     - uses: actions/upload-artifact@v1
       with:
-        name: fullpageos.img.gz
-        path: fullpageos.img.gz
+        name: build.img.gz
+        path: build.img.gz
     - name: Create Release
       id: create_release
       uses: actions/create-release@latest
@@ -30,12 +45,12 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
     - name: Upload Release
-      id: upload-release-asset-fullpageos
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: fullpageos.img.gz
-        asset_name: fullpageos.img.gz
+        asset_path: build.img.gz
+        asset_name: build.img.gz
         asset_content_type: application/octet-stream
