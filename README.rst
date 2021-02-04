@@ -1,6 +1,7 @@
 FullPageOS
 ==========
 
+
 .. image:: https://raw.githubusercontent.com/guysoft/FullPageOS/devel/media/FullPageOS.png
 .. :scale: 50 %
 .. :alt: FullPageOS logo
